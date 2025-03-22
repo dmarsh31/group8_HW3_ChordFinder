@@ -5,8 +5,25 @@ import java.util.Set;
 
 public class ChordFinder{
 
+    public Set<String> getChordName(String ... note){
+        Set<String> returnSet = new HashSet<>();
+
+        //cases where there are too few or many arguments
+        if (note.length != 3) throw new IllegalArgumentException("Too many or few inputs");
+
+        //gets all chords for the input
+        Set<Chord> chordSet = getAllChords(note[0], note[1], note[2]);
+
+        //formats all chords into a string set
+        for (Chord chord : chordSet) {
+            returnSet.add(chord.toString());
+        }
+
+        return returnSet;
+    }
+
     //this returns a set of all valid chords from 3 notes
-    public Set<Chord> getAllChords(String firstNote, String secondNote, String thirdNote){
+    private Set<Chord> getAllChords(String firstNote, String secondNote, String thirdNote){
         Set<Chord> returnSet = new HashSet<>();
         Set<Chord> tempSet = new HashSet<>();
 

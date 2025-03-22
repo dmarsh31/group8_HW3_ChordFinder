@@ -6,6 +6,7 @@ public class Chord {
     String rootNote;
     String thirdNote;
     String fifthNote;
+    String chordQuality;
     
     //constructor
     public Chord(String rootNote, String thirdNote, String fifthNote){
@@ -15,33 +16,44 @@ public class Chord {
     }
 
     //we should change this to just return the chord name
-    //but for the moment i have it return the notes for debugging
     @Override
-    public String toString(){
-        return rootNote + " " + thirdNote + " " + fifthNote;
+    public String toString(){   
+        return this.rootNote + " " + this.chordQuality;
     }
 
     //checks if the chord is a real chord
+    //if the chord is real it sets the chordQuality feild
     public boolean isValidChord(){
+        if (getTone(this.rootNote) == -1 || getTone(this.thirdNote) == -1 || getTone(this.fifthNote) == -1 ){
+            throw new IllegalArgumentException("Invalid Input"); 
+        }
         //gets distance in semi-tones for the 3 notes
         int distanceFromRootToThird = (getTone(this.thirdNote) - getTone(this.rootNote) + 12) % 12;
         int distanceFromThirdToFifth = (getTone(this.fifthNote) - getTone(this.thirdNote) + 12) % 12;
         
         //all cases where a real chord exists
-        return (distanceFromRootToThird == 4 && distanceFromThirdToFifth == 3) || // Major 
-               (distanceFromRootToThird == 3 && distanceFromThirdToFifth == 4) || // Minor 
-               (distanceFromRootToThird == 3 && distanceFromThirdToFifth == 3) || // Diminished
-               (distanceFromRootToThird == 4 && distanceFromThirdToFifth == 4);   // Augmented
+        //sets the chordQuality feild
+    if (distanceFromRootToThird == 4 && distanceFromThirdToFifth == 3) {
+        this.chordQuality = "maj";
+        return true;
+    } else if (distanceFromRootToThird == 3 && distanceFromThirdToFifth == 4) {
+        this.chordQuality = "min";
+        return true;
+    } else if (distanceFromRootToThird == 3 && distanceFromThirdToFifth == 3) {
+        this.chordQuality = "dim";
+        return true;
+    } else if (distanceFromRootToThird == 4 && distanceFromThirdToFifth == 4) {
+        this.chordQuality = "aug";
+        return true;
+    }
+    return false;
     }
 
 
 
     
-
-
     //the following is a method and a map to get the tone of each note
-    //this probally should be put in its own class but im lazy so im hiding it at the bottom
-    public static int getTone(String note) {
+    private static int getTone(String note) {
         return noteToToneMap.getOrDefault(note, -1);
     }
     private static final Map<String, Integer> noteToToneMap = new HashMap<>();
