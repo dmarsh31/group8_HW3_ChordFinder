@@ -5,6 +5,7 @@ import java.util.Set;
 
 public class ChordFinder{
 
+    //gets the name of all chord that 3 notes can produce
     public Set<String> getChordName(String ... note){
         Set<String> returnSet = new HashSet<>();
 

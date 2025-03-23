@@ -1,3 +1,5 @@
+// Group Members: Dustin M., Riley S., Khu Y.
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,14 +17,14 @@ public class Chord {
         this.fifthNote = fifthNote;
     }
 
-    //we should change this to just return the chord name
+    //returns the name of chord e.g. E maj
     @Override
     public String toString(){   
         return this.rootNote + " " + this.chordQuality;
     }
 
     //checks if the chord is a real chord
-    //if the chord is real it sets the chordQuality feild
+    //if the chord is valid it sets the chordQuality feild
     public boolean isValidChord(){
         if (getTone(this.rootNote) == -1 || getTone(this.thirdNote) == -1 || getTone(this.fifthNote) == -1 ){
             throw new IllegalArgumentException("Invalid Input"); 
