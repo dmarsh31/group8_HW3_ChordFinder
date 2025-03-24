@@ -1,3 +1,5 @@
+package group8.hw3.chordfinder;
+
 // Group Members: Dustin M., Riley S., Khu Y.
 
 import java.util.Set;
