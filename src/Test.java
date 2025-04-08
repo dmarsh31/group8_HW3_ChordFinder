@@ -8,9 +8,7 @@ public class Test {
         Chord c = new Chord("C", "E", "G", "B");
         System.out.println(c.nameOfIntervals);
 
-        ChordFinder cf = new ChordFinder();
-
-        List<Chord> allChords = cf.getAllPermutations("A", "B", "C", "D");
+        List<Chord> allChords = PermuteChord.getAllPermutations("A", "B", "C");
         for (Chord chord : allChords) {
             System.out.println(chord.nameOfIntervals);
         }
