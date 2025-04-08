@@ -1,0 +1,62 @@
+{
+	"chords": [
+		{
+			"name": "MAJOR",
+			"display_name": "Maj",
+			"intervals": [
+				"MAJOR_THIRD",
+				"MINOR_THIRD"
+			]
+		},
+		{
+			"name": "MINOR",
+			"display_name": "Min",
+			"intervals": [
+				"MINOR_THIRD",
+				"MAJOR_THIRD"
+			]
+		},
+		{
+			"name": "DIMINISHED",
+			"display_name": "Dim",
+			"intervals": [
+				"MINOR_THIRD",
+				"MINOR_THIRD"
+			]
+		},
+		{
+			"name": "AUGMENTED",
+			"display_name": "Aug",
+			"intervals": [
+				"MAJOR_THIRD",
+				"MAJOR_THIRD"
+			]
+		},
+		{
+			"name": "SUSPENDED4",
+			"display_name": "Sus4",
+			"intervals": [
+				"PERFECT_FOURTH",
+				"PERFECT_FIFTH"
+			]
+		},
+		{
+			"name": "DOMINANT_7",
+			"display_name": "7",
+			"intervals": [
+				"MAJOR_THIRD",
+				"PERFECT_FIFTH",
+				"MINOR_THIRD"
+			]
+		},
+		{
+			"name": "MAJOR_7",
+			"display_name": "maj7",
+			"intervals": [
+				"MAJOR_THIRD",
+				"PERFECT_FIFTH",
+				"MAJOR_THIRD"
+			]
+		}
+	]
+}
