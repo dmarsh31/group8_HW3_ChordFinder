@@ -1,96 +1,92 @@
 // Group Members: Dustin M., Riley S., Khu Y.
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
+import java.util.*;
+
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Chord {
+    //the full and abbreviated chord names
+    private String chordName;
+    private String chordDisplayName;
 
     //list of all notes in the chord
     private ArrayList <String> notes;
 
     //this list is the name of all intervals in the chord
     //**e.g. the first string is the interval between the first note and the second note
-    public ArrayList <String> nameOfIntervals;
+    private ArrayList <String> nameOfIntervals;
 
-    //constructor -- ensures all notes are real notes and fills both the notes list, and distanceFromEachNote list
+    //a list of all potential chords names
+    private static Set<Chord> potentialChords;
+
+    //constructor -- fills the notes list, names of intervals list, gives the chord its chordName and chordDisplayName
+    //THE getAllPotentialChord() MUST BE RUN BEFORE YOU CALL THIS CONSTRUCTOR!!!
     public Chord(String ... notes){
-        this.notes = new ArrayList<String>();
+
+        this.notes = new ArrayList<String>(Arrays.asList(notes));
         this.nameOfIntervals = new ArrayList<String>();
-
-        //constructs this.notes list and ensures there is no duplicate notes
-        for (String note : notes) {
-            this.notes.add(note);
-        } 
-
         //gets the interval from note to note
         for (int i=0; i<this.notes.size() - 1; i++){
-            //case if an invalid note is given 
-            if (getTone(this.notes.get(i + 1)) == -1 || getTone(this.notes.get(i)) == -1) {
-                throw new IllegalArgumentException("This chord contains an invalid note");
+            int distance = (ChordMaps.getTone(this.notes.get(i + 1)) - ChordMaps.getTone(this.notes.get(i)) + 12) % 12;
+            this.nameOfIntervals.add(ChordMaps.getIntervalName(distance));
+        }
+        //looks through all potential chords and if there is a match it sets the name felids otherwise they stay NULL
+        this.chordDisplayName = null;
+        this.chordName = null;
+        for(Chord c : potentialChords){
+            if(c.nameOfIntervals.equals(this.nameOfIntervals)){
+                this.chordDisplayName = c.chordDisplayName;
+                this.chordName = c.chordName;
             }
-            int distance = (getTone(this.notes.get(i + 1)) - getTone(this.notes.get(i)) + 12) % 12;
-            this.nameOfIntervals.add(getIntervalName(distance));
         }
     }
 
-    //TODO gets chord name based of a json file
+    //this constructor is just used for the potentialChords list
+    private Chord(String chordName, String chordDisplayName, ArrayList<String> listOfIntervals){
+        this.chordName = chordName;
+        this.chordDisplayName = chordDisplayName;
+        this.nameOfIntervals = listOfIntervals;
+    }
+
     @Override
-    public String toString(){   
-        return "";
+    public String toString(){
+        if (this.chordName == null) return null;
+        return this.notes.get(0) + " " + this.chordDisplayName;
     }
 
+    //gets all potential chords 
+    public static boolean getAllPotentialChord(String fileName){
+        potentialChords = new HashSet<Chord>();
+        String jsonString = "";
 
+        //grabs JSON file
+        try{
+            jsonString = new String (Files.readAllBytes(Paths.get(fileName)));
+        } catch (IOException e) {
+            System.err.println("Problem reading file: " + e.getMessage());
+            return false;
+        }
+        JSONObject root = new JSONObject(jsonString);
+        JSONArray chords = root.getJSONArray("chords");
 
-    //the following should be moved to a new class but honestly doesn't matter
-
-    //the following is a method and a map to get the tone of each note
-    private static int getTone(String note) {
-        return noteToToneMap.getOrDefault(note, -1);
+        //Gets all possible chord names and their intervals from JSON
+        for(int i = 0 ; i < chords.length(); i++){
+            JSONObject chord = chords.getJSONObject(i);
+            String name = chord.getString("name");
+            String displayName = chord.getString("display_name");
+            JSONArray intervals = chord.getJSONArray("intervals");
+            List<String> intervalsList = new ArrayList<String>();
+            for (int j = 0; j < intervals.length(); j++) {
+                intervalsList.add(intervals.getString(j));
+            }
+            potentialChords.add(new Chord(name, displayName, new ArrayList<>(intervalsList)));
+        }
+        return true;
     }
-    private static final Map<String, Integer> noteToToneMap = new HashMap<>();
-    static {
-        noteToToneMap.put("A", 0);
-        noteToToneMap.put("A#", 1);
-        noteToToneMap.put("Bb", 1);
-        noteToToneMap.put("B", 2);
-        noteToToneMap.put("Cb", 2);
-        noteToToneMap.put("B#", 3);
-        noteToToneMap.put("C", 3);
-        noteToToneMap.put("C#", 4);
-        noteToToneMap.put("Db", 4);
-        noteToToneMap.put("D", 5);
-        noteToToneMap.put("D#", 6);
-        noteToToneMap.put("Eb", 6);
-        noteToToneMap.put("E", 7);
-        noteToToneMap.put("Fb", 7);
-        noteToToneMap.put("E#", 8);
-        noteToToneMap.put("F", 8);
-        noteToToneMap.put("F#", 9);
-        noteToToneMap.put("Gb", 9);
-        noteToToneMap.put("G", 10);
-        noteToToneMap.put("G#", 11);
-        noteToToneMap.put("Ab", 11);
-    }
-
-    //the following is a method and a map to get the interval name for semitone distance
-    private static String getIntervalName(int i) {
-        return semitonesToIntervalName.get(i);
-    }
-    private static final Map<Integer, String> semitonesToIntervalName = new HashMap<>();
-    static {
-        semitonesToIntervalName.put(0, "PERFECT_UNISON");
-        semitonesToIntervalName.put(1, "MINOR_SECOND");
-        semitonesToIntervalName.put(2, "MAJOR_SECOND");
-        semitonesToIntervalName.put(3, "MINOR_THIRD");
-        semitonesToIntervalName.put(4, "MAJOR_THIRD");
-        semitonesToIntervalName.put(5, "PERFECT_FOURTH");
-        semitonesToIntervalName.put(6, "DIMINISHED_FIFTH");
-        semitonesToIntervalName.put(7, "PERFECT_FIFTH");
-        semitonesToIntervalName.put(8, "AUGMENTED_FIFTH");
-        semitonesToIntervalName.put(9, "MAJOR_SIXTH");
-        semitonesToIntervalName.put(10, "MINOR_SEVENTH");
-        semitonesToIntervalName.put(11, "MAJOR_SEVENTH");
-    }
-
 }
